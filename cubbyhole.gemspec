@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Andy Delcambre"]
   s.email       = ["adelcambre@engineyard.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{A zero config data store}
+  s.description = %q{This project will be a zero configuation datastore that aims to be ActiveModel compliant}
 
   s.rubyforge_project = "cubbyhole"
 
