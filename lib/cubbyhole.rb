@@ -1,7 +1,7 @@
 require "cubbyhole/version"
 
 def Object.const_missing(name)
-  eval "#{name} = Class.new(Cubbyhole::Base)"
+  const_set(name, Class.new(Cubbyhole::Base))
 end
 
 module Cubbyhole
