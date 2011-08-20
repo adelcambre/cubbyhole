@@ -21,6 +21,10 @@ module Cubbyhole
       id
     end
 
+    def self.all
+      objs.values
+    end
+
     def self.objs
       @objs ||= {}
     end

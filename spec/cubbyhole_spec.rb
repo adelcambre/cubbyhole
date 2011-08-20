@@ -50,4 +50,10 @@ describe Cubbyhole do
     fetched.foo.should == "baz"
     fetched.bar.should == "zot"
   end
+
+  it "finds all objects" do
+    3.times { MyModel.create }
+
+    MyModel.all.size.should == 3
+  end
 end
