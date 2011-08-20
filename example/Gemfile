@@ -1,0 +1,5 @@
+source :rubygems
+
+gem "cubbyhole", :path => ".."
+gem "sinatra"
+gem "haml"

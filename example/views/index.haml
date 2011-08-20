@@ -1,0 +1,5 @@
+%a{:href => "/posts/new"} New Post
+
+- @posts.each do |post|
+  %h1= post.title
+  %p= post.body
