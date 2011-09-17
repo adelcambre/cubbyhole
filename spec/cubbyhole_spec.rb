@@ -56,4 +56,12 @@ describe Cubbyhole do
 
     MyModel.all.size.should == 3
   end
+
+  it "allows you to destroy objects" do
+    object = MyModel.create
+    id = object.id
+
+    object.destroy
+    MyModel.get(object.id).should be_nil
+  end
 end

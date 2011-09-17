@@ -48,6 +48,10 @@ module Cubbyhole
       self.class.objs[@id] = self
     end
 
+    def destroy
+      self.class.objs.delete(@id)
+    end
+
     def method_missing(meth, *args, &blk)
       key = meth.to_s
 
