@@ -1,4 +1,5 @@
-require "cubbyhole/version"
+require 'cubbyhole/version'
+require 'sdbm'
 
 def Object.const_missing(name)
   const_set(name, Class.new(Cubbyhole::Base))
@@ -6,12 +7,16 @@ end
 
 module Cubbyhole
   class Base
+    METHOD_BLACKLIST = [:marshal_load, :marshal_dump, :_dump, :_load]
+
     def self.create(params={})
       new(params).save
     end
 
     def self.get(id)
-      objs[id]
+      if str = sdbm[id.to_s]
+        Marshal.load(str)
+      end
     end
 
     def self.next_id
@@ -22,11 +27,11 @@ module Cubbyhole
     end
 
     def self.all
-      objs.values
+      sdbm.values.map{|x| Marshal.load(x) }
     end
 
-    def self.objs
-      @objs ||= {}
+    def self.sdbm
+      @sdbm ||= SDBM.new("cubbyhole.#{self.to_s}.sdbm")
     end
 
     def initialize(params={})
@@ -44,27 +49,33 @@ module Cubbyhole
 
     def save
       @persisted = true
-      stringify_keys!
-      self.class.objs[@id] = self
+      normalize_params!
+      self.class.sdbm[id.to_s] = Marshal.dump(self)
+      self
     end
 
     def destroy
-      self.class.objs.delete(@id)
+      self.class.sdbm.delete(@id.to_s)
     end
 
     def method_missing(meth, *args, &blk)
+      return super if METHOD_BLACKLIST.include?(meth.to_sym)
+
       key = meth.to_s
 
       if key =~ /=$/
         raise ArgumentError unless args.size == 1
         @params[key.gsub(/=$/, "")] = args.first
       else
-        raise ArgumentError unless args.size == 0
+        return super if args.size != 0
         @params[key]
       end
     end
 
-    def respond_to?(*args); true; end
+    def respond_to?(meth)
+      return super if METHOD_BLACKLIST.include?(meth.to_sym)
+      true
+    end
 
     def update_attributes(params)
       @params.merge!(params)
@@ -72,7 +83,9 @@ module Cubbyhole
       save
     end
 
-    def stringify_keys!
+    def normalize_params!
+      @params.default = nil
+
       @params.keys.each do |key|
         @params[key.to_s] = @params.delete(key)
       end
