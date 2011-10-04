@@ -1,4 +1,4 @@
-require 'sdbm'
+require 'cubbyhole/collection'
 
 module Cubbyhole
   class Base
@@ -9,9 +9,11 @@ module Cubbyhole
     end
 
     def self.get(id)
-      if str = sdbm[id.to_s]
-        Marshal.load(str)
-      end
+      backend[id.to_s]
+    end
+
+    def self.get!(id)
+      get(id) or raise "#{self.class} not found for id #{id}"
     end
 
     def self.next_id
@@ -25,8 +27,25 @@ module Cubbyhole
       sdbm.values.map{|x| Marshal.load(x) }
     end
 
-    def self.sdbm
-      @sdbm ||= SDBM.new("cubbyhole.#{self.to_s}.sdbm")
+    def self.first(atts = nil)
+      all(atts).first
+    end
+
+    def self.last(atts = nil)
+      all(atts).last
+    end
+
+    def self.all(atts = nil)
+      Collection.new(backend.keys.sort_by(&:to_i).map{|k| backend[k] }).all(atts)
+    end
+
+    def self.backend
+      require 'cubbyhole/sdbm'
+      @backend ||= SDBM.new(self.to_s)
+    end
+
+    def self.nuke
+      backend.clear
     end
 
     def initialize(params={})
@@ -45,12 +64,12 @@ module Cubbyhole
     def save
       @persisted = true
       normalize_params!
-      self.class.sdbm[id.to_s] = Marshal.dump(self)
+      self.class.backend[id.to_s] = self
       self
     end
 
     def destroy
-      self.class.sdbm.delete(@id.to_s)
+      self.class.backend.delete(@id.to_s)
     end
 
     def method_missing(meth, *args, &blk)
@@ -72,6 +91,10 @@ module Cubbyhole
       true
     end
 
+    def attributes
+      @params.dup
+    end
+
     def update_attributes(params)
       @params.merge!(params)
       normalize_params!
@@ -81,7 +104,7 @@ module Cubbyhole
     def normalize_params!
       @params.default = nil
 
-      @params.keys.each do |key|
+      @params.keys.dup.each do |key|
         @params[key.to_s] = @params.delete(key)
       end
       @params
