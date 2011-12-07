@@ -2,7 +2,7 @@
 require 'cubbyhole/vendor/core_ext/string/multibyte'
 require 'cubbyhole/vendor/i18n'
 
-module ActiveSupport
+module Cubbyhole
   module Inflector
 
     # Replaces non-ASCII characters with an ASCII approximation, or if none
@@ -59,8 +59,8 @@ module ActiveSupport
     #   transliterate("Jürgen")
     #   # => "Juergen"
     def transliterate(string, replacement = "?")
-      I18n.transliterate(ActiveSupport::Multibyte::Unicode.normalize(
-        ActiveSupport::Multibyte::Unicode.tidy_bytes(string), :c),
+      I18n.transliterate(Cubbyhole::Multibyte::Unicode.normalize(
+        Cubbyhole::Multibyte::Unicode.tidy_bytes(string), :c),
           :replacement => replacement)
     end
 

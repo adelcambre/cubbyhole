@@ -17,7 +17,7 @@ class String
   #   "the blue mailman".pluralize # => "the blue mailmen"
   #   "CamelOctopus".pluralize     # => "CamelOctopi"
   def pluralize
-    ActiveSupport::Inflector.pluralize(self)
+    Cubbyhole::Inflector.pluralize(self)
   end
 
   # The reverse of +pluralize+, returns the singular form of a word in a string.
@@ -29,7 +29,7 @@ class String
   #   "the blue mailmen".singularize # => "the blue mailman"
   #   "CamelOctopi".singularize      # => "CamelOctopus"
   def singularize
-    ActiveSupport::Inflector.singularize(self)
+    Cubbyhole::Inflector.singularize(self)
   end
 
   # +constantize+ tries to find a declared constant with the name specified
@@ -40,7 +40,7 @@ class String
   #   "Module".constantize # => Module
   #   "Class".constantize  # => Class
   def constantize
-    ActiveSupport::Inflector.constantize(self)
+    Cubbyhole::Inflector.constantize(self)
   end
 
   # By default, +camelize+ converts strings to UpperCamelCase. If the argument to camelize
@@ -54,8 +54,8 @@ class String
   #   "active_record/errors".camelize(:lower) # => "activeRecord::Errors"
   def camelize(first_letter = :upper)
     case first_letter
-      when :upper then ActiveSupport::Inflector.camelize(self, true)
-      when :lower then ActiveSupport::Inflector.camelize(self, false)
+      when :upper then Cubbyhole::Inflector.camelize(self, true)
+      when :lower then Cubbyhole::Inflector.camelize(self, false)
     end
   end
   alias_method :camelcase, :camelize
@@ -69,7 +69,7 @@ class String
   #   "man from the boondocks".titleize # => "Man From The Boondocks"
   #   "x-men: the last stand".titleize  # => "X Men: The Last Stand"
   def titleize
-    ActiveSupport::Inflector.titleize(self)
+    Cubbyhole::Inflector.titleize(self)
   end
   alias_method :titlecase, :titleize
 
@@ -80,14 +80,14 @@ class String
   #   "ActiveRecord".underscore         # => "active_record"
   #   "ActiveRecord::Errors".underscore # => active_record/errors
   def underscore
-    ActiveSupport::Inflector.underscore(self)
+    Cubbyhole::Inflector.underscore(self)
   end
 
   # Replaces underscores with dashes in the string.
   #
   #   "puni_puni" # => "puni-puni"
   def dasherize
-    ActiveSupport::Inflector.dasherize(self)
+    Cubbyhole::Inflector.dasherize(self)
   end
 
   # Removes the module part from the constant expression in the string.
@@ -95,7 +95,7 @@ class String
   #   "ActiveRecord::CoreExtensions::String::Inflections".demodulize # => "Inflections"
   #   "Inflections".demodulize                                       # => "Inflections"
   def demodulize
-    ActiveSupport::Inflector.demodulize(self)
+    Cubbyhole::Inflector.demodulize(self)
   end
 
   # Replaces special characters in a string so that it may be used as part of a 'pretty' URL.
@@ -114,7 +114,7 @@ class String
   #   <%= link_to(@person.name, person_path %>
   #   # => <a href="/person/1-donald-e-knuth">Donald E. Knuth</a>
   def parameterize(sep = '-')
-    ActiveSupport::Inflector.parameterize(self, sep)
+    Cubbyhole::Inflector.parameterize(self, sep)
   end
 
   # Creates the name of a table like Rails does for models to table names. This method
@@ -124,7 +124,7 @@ class String
   #   "egg_and_ham".tableize     # => "egg_and_hams"
   #   "fancyCategory".tableize   # => "fancy_categories"
   def tableize
-    ActiveSupport::Inflector.tableize(self)
+    Cubbyhole::Inflector.tableize(self)
   end
 
   # Create a class name from a plural table name like Rails does for table names to models.
@@ -138,7 +138,7 @@ class String
   #
   #   "business".classify # => "Busines"
   def classify
-    ActiveSupport::Inflector.classify(self)
+    Cubbyhole::Inflector.classify(self)
   end
 
   # Capitalizes the first word, turns underscores into spaces, and strips '_id'.
@@ -147,7 +147,7 @@ class String
   #   "employee_salary" # => "Employee salary"
   #   "author_id"       # => "Author"
   def humanize
-    ActiveSupport::Inflector.humanize(self)
+    Cubbyhole::Inflector.humanize(self)
   end
 
   # Creates a foreign key name from a class name.
@@ -159,6 +159,6 @@ class String
   #   "Message".foreign_key(false) # => "messageid"
   #   "Admin::Post".foreign_key    # => "post_id"
   def foreign_key(separate_class_name_and_id_with_underscore = true)
-    ActiveSupport::Inflector.foreign_key(self, separate_class_name_and_id_with_underscore)
+    Cubbyhole::Inflector.foreign_key(self, separate_class_name_and_id_with_underscore)
   end
 end

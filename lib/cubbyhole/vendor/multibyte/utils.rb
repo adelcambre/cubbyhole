@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module ActiveSupport #:nodoc:
+module Cubbyhole #:nodoc:
   module Multibyte #:nodoc:
     if Kernel.const_defined?(:Encoding)
       # Returns a regular expression that matches valid characters in the current encoding

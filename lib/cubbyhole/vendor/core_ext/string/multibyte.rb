@@ -7,7 +7,7 @@ class String
     #
     # +mb_chars+ is a multibyte safe proxy for string methods.
     #
-    # In Ruby 1.8 and older it creates and returns an instance of the ActiveSupport::Multibyte::Chars class which
+    # In Ruby 1.8 and older it creates and returns an instance of the Cubbyhole::Multibyte::Chars class which
     # encapsulates the original string. A Unicode safe version of all the String methods are defined on this proxy
     # class. If the proxy class doesn't respond to a certain method, it's forwarded to the encapsulated string.
     #
@@ -34,11 +34,11 @@ class String
     # String and Char work like expected. The bang! methods change the internal string representation in the Chars
     # object. Interoperability problems can be resolved easily with a +to_s+ call.
     #
-    # For more information about the methods defined on the Chars proxy see ActiveSupport::Multibyte::Chars. For
-    # information about how to change the default Multibyte behavior see ActiveSupport::Multibyte.
+    # For more information about the methods defined on the Chars proxy see Cubbyhole::Multibyte::Chars. For
+    # information about how to change the default Multibyte behavior see Cubbyhole::Multibyte.
     def mb_chars
-      if ActiveSupport::Multibyte.proxy_class.consumes?(self)
-        ActiveSupport::Multibyte.proxy_class.new(self)
+      if Cubbyhole::Multibyte.proxy_class.consumes?(self)
+        Cubbyhole::Multibyte.proxy_class.new(self)
       else
         self
       end
@@ -56,8 +56,8 @@ class String
     end
   else
     def mb_chars
-      if ActiveSupport::Multibyte.proxy_class.wants?(self)
-        ActiveSupport::Multibyte.proxy_class.new(self)
+      if Cubbyhole::Multibyte.proxy_class.wants?(self)
+        Cubbyhole::Multibyte.proxy_class.new(self)
       else
         self
       end
@@ -66,7 +66,7 @@ class String
     # Returns true if the string has UTF-8 semantics (a String used for purely byte resources is unlikely to have
     # them), returns false otherwise.
     def is_utf8?
-      ActiveSupport::Multibyte::Chars.consumes?(self)
+      Cubbyhole::Multibyte::Chars.consumes?(self)
     end
   end
 end

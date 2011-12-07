@@ -6,7 +6,7 @@
 # Here is an example where +on_load+ method is called to register a hook.
 #
 #   initializer "active_record.initialize_timezone" do
-#     ActiveSupport.on_load(:active_record) do
+#     Cubbyhole.on_load(:active_record) do
 #       self.time_zone_aware_attributes = true
 #       self.default_timezone = :utc
 #     end
@@ -15,9 +15,9 @@
 # When the entirety of +activerecord/lib/active_record/base.rb+ has been evaluated then +run_load_hooks+ is invoked.
 # The very last line of +activerecord/lib/active_record/base.rb+ is:
 #
-#   ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
+#   Cubbyhole.run_load_hooks(:active_record, ActiveRecord::Base)
 #
-module ActiveSupport
+module Cubbyhole
   @load_hooks = Hash.new {|h,k| h[k] = [] }
   @loaded = {}
 

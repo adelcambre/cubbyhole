@@ -1,25 +1,25 @@
 # encoding: utf-8
 require 'cubbyhole/vendor/core_ext/module/attribute_accessors'
 
-module ActiveSupport #:nodoc:
+module Cubbyhole #:nodoc:
   module Multibyte
     autoload :EncodingError, 'multibyte/exceptions'
     autoload :Chars, 'multibyte/chars'
     autoload :Unicode, 'multibyte/unicode'
 
     # The proxy class returned when calling mb_chars. You can use this accessor to configure your own proxy
-    # class so you can support other encodings. See the ActiveSupport::Multibyte::Chars implementation for
+    # class so you can support other encodings. See the Cubbyhole::Multibyte::Chars implementation for
     # an example how to do this.
     #
     # Example:
-    #   ActiveSupport::Multibyte.proxy_class = CharsForUTF32
+    #   Cubbyhole::Multibyte.proxy_class = CharsForUTF32
     def self.proxy_class=(klass)
       @proxy_class = klass
     end
 
     # Returns the current proxy class
     def self.proxy_class
-      @proxy_class ||= ActiveSupport::Multibyte::Chars
+      @proxy_class ||= Cubbyhole::Multibyte::Chars
     end
 
     # Regular expressions that describe valid byte sequences for a character
