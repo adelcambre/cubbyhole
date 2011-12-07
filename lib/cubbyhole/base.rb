@@ -1,4 +1,5 @@
 require 'cubbyhole/collection'
+require 'cubbyhole/vendor/inflector'
 
 module Cubbyhole
   class Base
@@ -52,6 +53,7 @@ module Cubbyhole
       @id = self.class.next_id
       @params = params
       @persisted = false
+      @dirty = true
       normalize_params!
     end
 
@@ -61,10 +63,17 @@ module Cubbyhole
       @persisted
     end
 
+    def dirty?
+      @dirty
+    end
+
     def save
+      return unless dirty?
       @persisted = true
+      @dirty = false
       normalize_params!
       self.class.backend[id.to_s] = self
+      save_children
       self
     end
 
@@ -79,6 +88,8 @@ module Cubbyhole
 
       if key =~ /=$/
         raise ArgumentError unless args.size == 1
+        @dirty = true
+        bidirectional_association(args.first)
         @params[key.gsub(/=$/, "")] = args.first
       else
         return super if args.size != 0
@@ -96,6 +107,7 @@ module Cubbyhole
     end
 
     def update_attributes(params)
+      @dirty = true
       @params.merge!(params)
       normalize_params!
       save
@@ -108,6 +120,25 @@ module Cubbyhole
         @params[key.to_s] = @params.delete(key)
       end
       @params
+    end
+
+    def save_children
+      @params.each do |k,v|
+        if v.is_a?(Cubbyhole::Base)
+          v.save
+        elsif v.respond_to?(:all?) && v.all? {|k| k.is_a?(Cubbyhole::Base)}
+          v.each(&:save)
+        end
+      end
+    end
+
+    def bidirectional_association(arg)
+      if arg.is_a?(Cubbyhole::Base)
+        name = self.class.to_s.underscore.pluralize
+        unless arg.send("#{name}")
+          arg.send("#{name}=", [self])
+        end
+      end
     end
   end
 end
